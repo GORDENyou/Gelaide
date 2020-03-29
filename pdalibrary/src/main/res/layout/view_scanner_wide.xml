@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="horizontal"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp">
+
+    <LinearLayout
+        android:id="@+id/sc_layout"
+        android:layout_width="0dp"
+        android:layout_weight="6"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittextview_background"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/scanner_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="@string/test_text"
+            android:textSize="@dimen/header_button_text_size" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:background="#DCDCDC" />
+
+        <EditText
+            android:id="@+id/scanner_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/edittextview_background"
+            android:gravity="center"
+            android:imeOptions="actionNone"
+            android:inputType="text"
+            android:text="@string/test_text"
+            android:textSize="@dimen/edit_text_size"
+            android:layout_marginBottom="3dp" />
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/scanner_button"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/buttton_style"
+        android:textSize="@dimen/header_button_text_size"
+        android:text="@string/scanner_button_text" />
+
+
+</LinearLayout>

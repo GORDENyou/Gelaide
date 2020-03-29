@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:background="@drawable/edittextview_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/spinner_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="@string/test_text"
+        android:textColor="#000000"
+        android:textSize="@dimen/header_button_text_size" />
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="3dp"
+        android:background="#DCDCDC" />
+    <!--<TextView-->
+    <!--android:id="@+id/content"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textColor="@color/colorAccent"/>-->
+    <!--<EditText-->
+    <!--android:id="@+id/context"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:visibility="visible"-->
+    <!--/>-->
+    <Spinner
+        android:id="@+id/spinner_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/edittextview_background"
+        android:gravity="center"
+        android:textSize="@dimen/edit_text_size" />
+
+</LinearLayout>

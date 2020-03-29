@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/gengXin"
+            style="@style/style_button"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="更新工单" />
+
+        <Button
+            android:id="@+id/shangChuan"
+            style="@style/style_button"
+            android:layout_weight="1"
+            android:text="上传数据" />
+    </LinearLayout>
+
+    <p.gordenyou.pdalibrary.view.SpinnerView
+        android:id="@+id/gongDan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:spinnertitle="工  单  号" />
+
+    <p.gordenyou.pdalibrary.view.SpinnerView
+        android:id="@+id/sheBei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:spinnertitle="设备编号" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/zhanWei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:buttonvisable="false"
+        app:scannertitle="站位条码" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/wuLiao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:buttonvisable="false"
+        app:scannertitle="物料条码" />
+
+    <p.gordenyou.pdalibrary.view.TextshowView
+        android:id="@+id/num_zhanWei"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:textshowtitle="站位总数" />
+
+    <p.gordenyou.pdalibrary.view.TextshowView
+        android:id="@+id/num_yiSao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:textshowtitle="已扫描数" />
+
+    <p.gordenyou.pdalibrary.view.TextshowView
+        android:id="@+id/zhengQue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:textshowtitle="正确物料" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/chaZhao"
+            style="@style/style_button"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="站位查找" />
+
+        <CheckBox
+            android:id="@+id/shunXu"
+            style="@style/style_button"
+            android:layout_weight="1"
+            android:text="依次扫描" />
+    </LinearLayout>
+
+</LinearLayout>
