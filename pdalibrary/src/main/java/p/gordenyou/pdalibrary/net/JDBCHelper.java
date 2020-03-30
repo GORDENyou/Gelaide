@@ -15,10 +15,10 @@ import p.gordenyou.pdalibrary.listener.JDBCHelperExecuteListener;
 import p.gordenyou.pdalibrary.listener.JDBCHelperQueryListener;
 
 public class JDBCHelper {
-    private final static String USERNAME = "sa";
-    private final static String PASSWORD = "lhfz123456";
+    public static String USERNAME = "sa";
+    public static String PASSWORD = "lhfz123456";
     private final static String CLASSNAME = "net.sourceforge.jtds.jdbc.Driver";
-    private final static String URL = "jdbc:jtds:sqlserver://121.35.98.225:10874;DatabaseName=LianHe";
+    public static String URL = "jdbc:jtds:sqlserver://121.35.98.225:10874;DatabaseName=LianHe";
 
     private static Connection con;
     private static JDBCHelper instance;
@@ -140,6 +140,7 @@ public class JDBCHelper {
             }
 
             try {
+                Thread.sleep(1000);
 //                String sql = "Update TCcang set rong = 1.0 where cang = '备件仓'";
                 //创建Statement,操作数据
                 PreparedStatement state;
@@ -166,7 +167,7 @@ public class JDBCHelper {
                     //回收资源
                     con.close();
                 }
-            } catch (java.sql.SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
@@ -204,6 +205,7 @@ public class JDBCHelper {
             }
 
             try {
+                Thread.sleep(1000);
 //                String sql = "Select * from TCcang where wei = '113'";
                 if (con != null && params.length != 0) {
                     state = con.prepareStatement(params[0]);
@@ -216,7 +218,7 @@ public class JDBCHelper {
                     }
                     con.close();
                 }
-            } catch (java.sql.SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }

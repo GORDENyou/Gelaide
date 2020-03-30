@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class LoginActivity extends BaseActivity {
     ScannerView password;
     @BindView(R.id.login)
     Button login;
+    @BindView(R.id.setting)
+    Button setting;
 
     @Override
     protected void initView() {
@@ -35,9 +38,19 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
         password.getEditText().setTransformationMethod(PasswordTransformationMethod.getInstance());
 
-        SharedPreferences pref = getSharedPreferences("userInfo" , MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences("userInfo", MODE_PRIVATE);
         String userName = pref.getString("userName", "");
         username.setText(userName);
+
+
+        String url = pref.getString("url", "");
+        if (!url.isEmpty()) {
+            String user = pref.getString("user", "");
+            String password = pref.getString("password", "");
+            JDBCHelper.URL = url;
+            JDBCHelper.USERNAME = user;
+            JDBCHelper.PASSWORD = password;
+        }
     }
 
     @Override
@@ -50,44 +63,51 @@ public class LoginActivity extends BaseActivity {
         login.setOnClickListener(v -> {
             login();
         });
+
+        setting.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, SettingActivity.class));
+        });
     }
 
     private void login() {
-        alertDialog.show();
-        JDBCHelper.getQueryHelper(SQLStatement.getLogin(username.getText(), password.getText()), "login", new JDBCHelperQueryListener() {
-            @Override
-            public void success(ArrayList<HashMap<String, Object>> result, String queryFlag) {
-                alertDialog.cancel();
-                switch (queryFlag) {
-                    case "login":
-                        if(result.size() == 1){
-                            Toast.makeText(LoginActivity.this,"登陆成功", Toast.LENGTH_SHORT).show();
+        if (CommonMethod.checkScannerView(LoginActivity.this, new LinearLayout[]{username, password})) {
+            alertDialog.show();
+//            SystemClock.sleep(1000);
+            JDBCHelper.getQueryHelper(SQLStatement.getLogin(username.getText(), password.getText()), "login", new JDBCHelperQueryListener() {
+                @Override
+                public void success(ArrayList<HashMap<String, Object>> result, String queryFlag) {
+                    alertDialog.cancel();
+                    switch (queryFlag) {
+                        case "login":
+                            if (result.size() == 1) {
+                                Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
 
-                            Iterator<HashMap<String, Object>> iterator = result.iterator();
-                            UserInfo.USERNAME = iterator.next().get("username").toString();
+                                Iterator<HashMap<String, Object>> iterator = result.iterator();
+                                UserInfo.USERNAME = iterator.next().get("username").toString();
 
 
-                            SharedPreferences pref = getSharedPreferences("userInfo" , MODE_PRIVATE);
-                            SharedPreferences.Editor editor = pref.edit();
-                            editor.putString("userName", UserInfo.USERNAME);
-                            editor.apply();
+                                SharedPreferences pref = getSharedPreferences("userInfo", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("userName", UserInfo.USERNAME);
+                                editor.apply();
 
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
 
-                        }else{
-                            CommonMethod.showErrorDialog(LoginActivity.this, "登陆失败，请检查用户名和密码");
-                        }
+                            } else {
+                                CommonMethod.showErrorDialog(LoginActivity.this, "登陆失败，请检查用户名和密码", null);
+                            }
+                    }
                 }
-            }
 
-            @Override
-            public void fail(String error) {
-                alertDialog.cancel();
-                CommonMethod.showErrorDialog(LoginActivity.this, "登陆失败：" + error);
-            }
-        }).sqlQuery();
+                @Override
+                public void fail(String error) {
+                    alertDialog.cancel();
+                    CommonMethod.showErrorDialog(LoginActivity.this, "登陆失败：" + error, null);
+                }
+            }).sqlQuery();
+        }
     }
 
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="p.gordenyou.geleide.activity.SettingActivity">
+
+    <p.gordenyou.pdalibrary.view.HeaderTitle
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headerbuttonvisable="false"
+        app:headertitle="网络配置" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/ip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:buttonvisable="false"
+        app:scannertitle="服务器IP地址" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/database"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:buttonvisable="false"
+        app:scannertitle="数据库名称" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:buttonvisable="false"
+        app:scannertitle="用户名" />
+
+    <p.gordenyou.pdalibrary.view.ScannerView
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:buttonvisable="false"
+        app:scannertitle="密码" />
+
+    <Button
+        android:id="@+id/save"
+        android:text="确  认  设  置"
+        android:layout_marginTop="32dp"
+        style="@style/style_button"/>
+
+</LinearLayout>

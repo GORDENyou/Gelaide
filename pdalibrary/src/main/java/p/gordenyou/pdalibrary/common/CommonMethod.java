@@ -42,11 +42,15 @@ public class CommonMethod {
                 }).show();
     }
 
-    public static void showErrorDialog(Context context, String message) {
+    public static void showErrorDialog(Context context, String message, SureCallback callback) {
         new AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert).setTitle("警告").setMessage(message).setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
+                    if(callback != null){
+                        callback.sureCallback();
+                    }
                 }).show();
     }
+
 
     /**
      * 判断字符串是否全为数字
@@ -114,13 +118,13 @@ public class CommonMethod {
             if (view instanceof ScannerView) {
                 ScannerView scannerView = (ScannerView) view;
                 if (scannerView.getEditText().getText().toString().equals("")) {
-                    showErrorDialog(context, scannerView.getTitle().replace(" ","") + "不能为空！");
+                    showErrorDialog(context, scannerView.getTitle().replace(" ","") + "不能为空！", null);
                     return false;
                 }
             } else {
                 NumberView numberView = (NumberView) view;
                 if (numberView.getEdittext().getText().toString().equals("0.0")) {
-                    showErrorDialog(context, numberView.getTitle().replace(" ","") + "不能为空！");
+                    showErrorDialog(context, numberView.getTitle().replace(" ","") + "不能为空！", null);
                     return false;
                 }
             }
