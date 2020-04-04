@@ -54,6 +54,8 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
     CheckBox chaZhao;
     @BindView(R.id.shunXu)
     CheckBox shunXu;
+    @BindView(R.id.shiShi)
+    CheckBox shiShi;
 
     private long firstClick;
 
@@ -75,6 +77,7 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
 
     private boolean isChazhao = false;
     private boolean isShunxu = false;
+    private boolean isShishi = false;
     private Object[] list_key;
     private int i; //记录当前站位key的位置
 
@@ -86,9 +89,6 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
 
     @Override
     protected void dealData() {
-        list_sheBei.clear();
-        list_sheBei.add("请选择设备");
-        sheBei.setSpinnerList(MainActivity.this, list_sheBei.toArray());
         getData();
     }
 
@@ -103,17 +103,27 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
 
                 Iterator<HashMap<String, Object>> iterator = result.iterator();
                 list_gongDan.clear();
+                preGongdan = 0;
+                preShebei = 0;
                 list_gongDan.add("请选择工单");
                 while (iterator.hasNext()) {
                     list_gongDan.add(iterator.next().get("gongdan").toString());
                 }
 
                 gongDan.setSpinnerList(MainActivity.this, list_gongDan.toArray());
+                list_sheBei.clear();
+                list_sheBei.add("请选择设备");
+                sheBei.setSpinnerList(MainActivity.this, list_sheBei.toArray());
 
                 zhanWei.setText("");
                 numZhanWei.setText("");
                 numYiSao.setText("");
                 zhengQue.setText("");
+
+                shunXu.setVisibility(View.INVISIBLE);
+                chaZhao.setVisibility(View.INVISIBLE);
+
+                num_yisao = 0;
             }
 
             @Override
@@ -134,7 +144,7 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                 getData();
             } else {
                 CommonMethod.showErrorDialog(MainActivity.this, "当前设备还有 " +
-                        (num_zhanwei - num_yisao) + " 个站位没有扫描，请勿刷新工单！",null);
+                        (num_zhanwei - num_yisao) + " 个站位没有扫描!确认刷新工单？", "继续扫描", null , "刷新工单", this::getData);
             }
         });
 
@@ -146,26 +156,14 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
                     if (num_yisao == 0) {
-                        Iterator<HashMap<String, Object>> iterator = data.iterator();
-                        list_sheBei.clear();
-                        list_sheBei.add("请选择设备");
-                        while (iterator.hasNext()) {
-                            HashMap<String, Object> temp = iterator.next();
-                            if (temp.get("gongdan").toString().equals(gongDan.getText())) {
-                                list_sheBei.add(temp.get("shebei").toString());
-                            }
-                        }
-
-                        sheBei.setSpinnerList(MainActivity.this, list_sheBei.toArray());
-                        preGongdan = position;
-                        sheBei.getSpinner().setSelection(0);
-                        preShebei = 0;
-                        shunXu.setVisibility(View.VISIBLE);
+                        changeGongdan(position);
                     } else {
                         if (preGongdan != position) {
                             CommonMethod.showErrorDialog(MainActivity.this, "当前设备还有 " +
-                                    (num_zhanwei - num_yisao) + " 个站位没有扫描，请勿切换工单！", () -> {
-                                gongDan.getSpinner().setSelection(preGongdan);
+                                    (num_zhanwei - num_yisao) + " 个站位没有扫描！确认切换工单？", "继续扫描", () -> gongDan.getSpinner().setSelection(preGongdan), "切换工单", () -> {
+                                changeGongdan(position);
+                                num_yisao = 0;
+                                numYiSao.setText(String.valueOf(num_yisao));
                             });
                         }
                     }
@@ -186,37 +184,19 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (gongDan.getSpinner().getSelectedItemId() != 0) {
-                    if(position != 0) {
+                    if (position != 0) {
                         if (num_yisao == 0) {
-                            Iterator<HashMap<String, Object>> iterator = data.iterator();
-                            map_shebei.clear();
-                            while (iterator.hasNext()) {
-                                HashMap<String, Object> temp = iterator.next();
-                                if (temp.get("gongdan").toString().equals(gongDan.getText()) &&
-                                        temp.get("shebei").toString().equals(sheBei.getText())) {
-                                    map_shebei.put(temp.get("zhanwei").toString(), temp.get("wuliao").toString());
-                                }
-                            }
-
-                            num_zhanwei = map_shebei.size();
-
-                            numZhanWei.setText(String.valueOf(num_zhanwei));
-                            numYiSao.setText(String.valueOf(num_yisao));
-
-                            preShebei = position;
-//                            preGongdan = (int) gongDan.getSpinner().getSelectedItemId();
-
-
-                            shunXu.setVisibility(View.VISIBLE);
-                            zhanWei.setText("");
-                            wuLiao.setText("");
-                            zhanWei.getEditText().requestFocus();
+                            changeShebei(position);
 
                         } else {
                             if (preShebei != position || preGongdan != gongDan.getSpinner().getSelectedItemId()) {
                                 CommonMethod.showErrorDialog(MainActivity.this, "当前设备还有 " +
-                                        (num_zhanwei - num_yisao) + " 个站位没有扫描，请勿切换设备！"
-                                        , () -> sheBei.getSpinner().setSelection(preShebei));
+                                                (num_zhanwei - num_yisao) + " 个站位没有扫描！确认切换设备？"
+                                        , "继续扫描", () -> sheBei.getSpinner().setSelection(preShebei), "切换设备", () -> {
+                                            changeShebei(position);
+                                            num_yisao = 0;
+                                            numYiSao.setText(String.valueOf(num_yisao));
+                                        });
                             }
 
                         }
@@ -226,7 +206,9 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                         }
                     }
                 } else {
-                    CommonMethod.showErrorDialog(MainActivity.this, "请先选择工单！", null);
+                    if (position != 0) {
+                        CommonMethod.showErrorDialog(MainActivity.this, "请先选择工单！", null);
+                    }
                 }
             }
 
@@ -251,7 +233,7 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                     }
                 }
             } else {
-                CommonMethod.showErrorDialog(MainActivity.this, "请先选择设备编号！", ()->{
+                CommonMethod.showErrorDialog(MainActivity.this, "请先选择设备编号！", () -> {
                     zhanWei.setText("");
                     zhanWei.getEditText().requestFocus();
                 });
@@ -262,12 +244,12 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
         wuLiao.getEditText().setOnEditorActionListener((v, actionId, event) -> {
             if (!wuLiao.getText().isEmpty()) {
                 if (isChazhao) {
-                    if(gongDan.getSpinner().getSelectedItemId() != 0){
-                        if(sheBei.getSpinner().getSelectedItemId() != 0){
+                    if (gongDan.getSpinner().getSelectedItemId() != 0) {
+                        if (sheBei.getSpinner().getSelectedItemId() != 0) {
                             if (CommonMethod.getKey(map_shebei, wuLiao.getText()).size() != 0) {
-                                CommonMethod.showDialog(MainActivity.this, "条码: " +
-                                        wuLiao.getText() + "\n 对应站位为： "
-                                        + CommonMethod.getKey(map_shebei, wuLiao.getText()).get(0));
+                                CommonMethod.showDialog(MainActivity.this, "条码: \n" +
+                                        wuLiao.getText() + "\n对应站位为： "
+                                        + getZhanwei() );
                                 wuLiao.setText("");
                             } else {
 
@@ -276,48 +258,79 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                                     wuLiao.getEditText().requestFocus();
                                 });
                             }
-                        }else{
-                            CommonMethod.showErrorDialog(MainActivity.this, "请先选择设备！", ()->{
+                        } else {
+                            CommonMethod.showErrorDialog(MainActivity.this, "请先选择设备！", () -> {
                                 wuLiao.setText("");
                             });
                         }
 
-                    }else{
-                        CommonMethod.showErrorDialog(MainActivity.this, "请先选择工单！", ()->{
+                    } else {
+                        CommonMethod.showErrorDialog(MainActivity.this, "请先选择工单！", () -> {
                             wuLiao.setText("");
                         });
                     }
 
-                }else{
+                } else {
                     if (!zhanWei.getText().isEmpty()) {
-                        if (wuLiao.getText().equals(testWuliao) && !set_yisao.contains(testWuliao)) {
+                        if (wuLiao.getText().equals(testWuliao)) {
 
-                            num_yisao++;
-                            numYiSao.setText(String.valueOf(num_yisao));
-                            set_yisao.add(testWuliao);
-                            zhanWei.getEditText().requestFocus();
+                            if (!set_yisao.contains(zhanWei.getText())) {
+                                num_yisao++;
+                                numYiSao.setText(String.valueOf(num_yisao));
+                                set_yisao.add(zhanWei.getText());
 
-                            saveSqls();
+                                //实时上传
+                                if (isShishi) {
+                                    JDBCHelper.getExecuteHelper(new String[]{SQLStatement.getInsert(gongDan.getText(), sheBei.getText(), zhanWei.getText(), wuLiao.getText())}, 1, (result, errorMessage) -> {
+                                        if (result) {
+                                            Toast.makeText(MainActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            saveSqls();
+                                        }
+                                    }).sqlExecute();
+                                } else {
+                                    saveSqls();
+                                }
+                            }
 
                             zhanWei.setText("");
                             wuLiao.setText("");
                             zhengQue.setText("");
+                            zhanWei.getEditText().requestFocus();
+
+                            if (isChazhao) {
+                                chaZhao.setFocusable(false);
+                            } else {
+                                chaZhao.setVisibility(View.INVISIBLE);
+                            }
 
                             if (isShunxu && i < list_key.length) {
+                                shunXu.setEnabled(false);
                                 zhanWei.setText(list_key[i].toString());
                                 zhengQue.setText(map_shebei.get(list_key[i].toString()));
                                 testWuliao = map_shebei.get(list_key[i].toString());
                                 wuLiao.getEditText().requestFocus();
                                 i++;
-                            }else{
+                            } else {
                                 //隐藏 依次扫描
                                 shunXu.setVisibility(View.INVISIBLE);
                             }
 
                             if (num_yisao == num_zhanwei) {
                                 CommonMethod.showRightDialog(MainActivity.this, "当前设备扫描完毕，请切换设备或生产单!");
-                                gongDan.getSpinner().setSelection(0);
-                                sheBei.getSpinner().setSelection(0);
+                                preGongdan = 0;
+                                preShebei = 0;
+                                Iterator<HashMap<String, Object>> iterator = data.iterator();
+                                list_gongDan.clear();
+                                list_gongDan.add("请选择工单");
+                                while (iterator.hasNext()) {
+                                    list_gongDan.add(iterator.next().get("gongdan").toString());
+                                }
+
+                                gongDan.setSpinnerList(MainActivity.this, list_gongDan.toArray());
+                                list_sheBei.clear();
+                                list_sheBei.add("请选择设备");
+                                sheBei.setSpinnerList(MainActivity.this, list_sheBei.toArray());
 
 //                        zhanWei.setText("");
 //                        wuLiao.setText("");
@@ -327,17 +340,22 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                                 numZhanWei.setText(String.valueOf(num_zhanwei));
                                 numYiSao.setText(String.valueOf(num_yisao));
 
-                                shunXu.setChecked(false);
+                                resetCheck();
+
+                                chaZhao.setVisibility(View.INVISIBLE);
+                                shunXu.setVisibility(View.INVISIBLE);
+
+//                                shunXu.setChecked(false);
 
                             }
                         } else {
-                            CommonMethod.showErrorDialog(MainActivity.this, "上料错误！", ()->{
+                            CommonMethod.showErrorDialog(MainActivity.this, "上料错误！", () -> {
                                 wuLiao.setText("");
                                 wuLiao.getEditText().requestFocus();
                             });
                         }
                     } else {
-                        CommonMethod.showErrorDialog(MainActivity.this, "请先扫描站位！", ()->{
+                        CommonMethod.showErrorDialog(MainActivity.this, "请先扫描站位！", () -> {
                             zhanWei.getEditText().requestFocus();
                             wuLiao.setText("");
                         });
@@ -351,22 +369,30 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
         zhanWei.getEditText().setOnKeyListener(this);
         wuLiao.getEditText().setOnKeyListener(this);
 
-        chaZhao.setOnClickListener(v -> {
-            if (chaZhao.isChecked()) {
+        chaZhao.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
                 isChazhao = true;
+
+                shunXu.setVisibility(View.INVISIBLE);
+
                 zhanWei.getEditText().setFocusable(false);
                 wuLiao.getEditText().requestFocus();
             } else {
                 isChazhao = false;
+                shunXu.setVisibility(View.VISIBLE);
+
                 zhanWei.getEditText().setFocusable(true);
                 zhanWei.getEditText().setFocusableInTouchMode(true);
                 zhanWei.getEditText().requestFocus();
             }
         });
 
-        shunXu.setOnClickListener(v -> {
+        shunXu.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (shunXu.isChecked()) {
                 isShunxu = true;
+
+                chaZhao.setVisibility(View.INVISIBLE);
+
                 zhanWei.getEditText().setFocusable(false);
                 list_key = map_shebei.keySet().toArray();
                 i = 0;
@@ -378,19 +404,124 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
 
             } else {
                 isShunxu = false;
+                chaZhao.setVisibility(View.VISIBLE);
+
                 zhanWei.getEditText().setFocusable(true);
                 zhanWei.getEditText().setFocusableInTouchMode(true);
                 zhanWei.getEditText().requestFocus();
+                zhanWei.setText("");
+                zhengQue.setText("");
             }
         });
 
+        shiShi.setOnCheckedChangeListener((buttonView, isChecked) -> isShishi = isChecked);
+    }
+
+    private String getZhanwei() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String i: CommonMethod.getKey(map_shebei, wuLiao.getText())) {
+            stringBuilder.append("\n");
+            stringBuilder.append(i);
+        }
+        return stringBuilder.toString();
+    }
+
+    private void changeGongdan(int position) {
+        Iterator<HashMap<String, Object>> iterator = data.iterator();
+        list_sheBei.clear();
+        list_sheBei.add("请选择设备");
+        while (iterator.hasNext()) {
+            HashMap<String, Object> temp = iterator.next();
+            if (temp.get("gongdan").toString().equals(gongDan.getText())) {
+                list_sheBei.add(temp.get("shebei").toString());
+            }
+        }
+
+        sheBei.setSpinnerList(MainActivity.this, list_sheBei.toArray());
+
+        //更新统计数据
+        num_zhanwei = 0;
+        numZhanWei.setText(String.valueOf(num_zhanwei));
+        numYiSao.setText(String.valueOf(num_yisao));
+
+        zhanWei.setText("");
+        wuLiao.setText("");
+        numZhanWei.setText("");
+        numYiSao.setText("");
+        zhengQue.setText("");
+
+        preGongdan = position;
+//                        sheBei.getSpinner().setSelection(0);
+        preShebei = 0;
+
+
+        resetCheck();
+        chaZhao.setVisibility(View.INVISIBLE);
+        shunXu.setVisibility(View.INVISIBLE);
+    }
+
+    private void changeShebei(int position) {
+        Iterator<HashMap<String, Object>> iterator = data.iterator();
+        map_shebei.clear();
+        while (iterator.hasNext()) {
+            HashMap<String, Object> temp = iterator.next();
+            if (temp.get("gongdan").toString().equals(gongDan.getText()) &&
+                    temp.get("shebei").toString().equals(sheBei.getText())) {
+                map_shebei.put(temp.get("zhanwei").toString(), temp.get("wuliao").toString());
+            }
+        }
+
+        num_zhanwei = map_shebei.size();
+        //置空检查
+        set_yisao = new HashSet<>();
+
+        numZhanWei.setText(String.valueOf(num_zhanwei));
+        numYiSao.setText(String.valueOf(num_yisao));
+
+        preShebei = position;
+//                            preGongdan = (int) gongDan.getSpinner().getSelectedItemId();
+
+        //打开选择权限
+        resetCheck();
+
+        zhanWei.setText("");
+        wuLiao.setText("");
+        zhanWei.getEditText().requestFocus();
+    }
+
+
+    private void resetCheck() {
+        chaZhao.setVisibility(View.VISIBLE);
+        shunXu.setVisibility(View.VISIBLE);
+        shunXu.setEnabled(true);
+        chaZhao.setFocusable(true);
+        chaZhao.setChecked(false);
+        shunXu.setChecked(false);
     }
 
     private void saveSqls() {
         sqls.add(SQLStatement.getInsert(gongDan.getText(), sheBei.getText(), zhanWei.getText(), wuLiao.getText()));
     }
 
+    //上传数据按钮
     private void saveData() {
+        if (sqls.size() != 0) {
+            if (num_yisao == 0) {
+                excuteDate();
+            } else {
+                CommonMethod.showErrorDialog(MainActivity.this, "当前设备还有 " +
+                                (num_zhanwei - num_yisao) + " 个站位没有扫描！"
+                        , "继续扫描", null, "确认上传", () -> {
+                            excuteDate();
+                            getData();
+                        });
+            }
+        } else {
+            CommonMethod.showDialog(MainActivity.this, "数据已全部上传！");
+        }
+    }
+
+    private void excuteDate() {
         alertDialog.show();
         String[] str_sqls = sqls.toArray(new String[0]);
         JDBCHelper.getExecuteHelper(str_sqls, 1, (result, errorMessage) -> {
@@ -416,7 +547,8 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
                 if (sqls.isEmpty()) {
                     System.exit(0);
                 } else {
-                    CommonMethod.showErrorDialog(MainActivity.this, "还有数据未上传！请上传扫描数据！", null);
+                    CommonMethod.showErrorDialog(MainActivity.this, "还有" +
+                            sqls.size() + "条数据未上传！请上传扫描数据！", null);
                 }
 
             }

@@ -10,42 +10,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/gengXin"
             style="@style/style_button"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
-            android:text="更新工单" />
+            android:text="刷新工单" />
 
         <Button
             android:id="@+id/shangChuan"
             style="@style/style_button"
             android:layout_weight="1"
             android:text="上传数据" />
+
+        <CheckBox
+            android:id="@+id/shiShi"
+            style="@style/style_button"
+            android:layout_weight="1"
+            android:text="实时上传" />
     </LinearLayout>
 
     <p.gordenyou.pdalibrary.view.SpinnerView
         android:id="@+id/gongDan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         app:spinnertitle="工  单  号" />
 
     <p.gordenyou.pdalibrary.view.SpinnerView
         android:id="@+id/sheBei"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         app:spinnertitle="设备编号" />
 
     <p.gordenyou.pdalibrary.view.ScannerView
         android:id="@+id/zhanWei"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         app:buttonvisable="false"
         app:scannertitle="站位条码" />
 
@@ -53,7 +60,7 @@
         android:id="@+id/wuLiao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         app:buttonvisable="false"
         app:scannertitle="物料条码" />
 
@@ -73,7 +80,7 @@
         android:id="@+id/zhengQue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         app:textshowtitle="正确物料" />
 
     <LinearLayout
@@ -84,14 +91,16 @@
         <CheckBox
             android:id="@+id/chaZhao"
             style="@style/style_button"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
+            android:visibility="invisible"
             android:text="站位查找" />
 
         <CheckBox
             android:id="@+id/shunXu"
             style="@style/style_button"
             android:layout_weight="1"
+            android:visibility="invisible"
             android:text="依次扫描" />
     </LinearLayout>
 

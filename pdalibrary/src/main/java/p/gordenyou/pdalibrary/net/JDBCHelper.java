@@ -18,7 +18,7 @@ public class JDBCHelper {
     public static String USERNAME = "sa";
     public static String PASSWORD = "lhfz123456";
     private final static String CLASSNAME = "net.sourceforge.jtds.jdbc.Driver";
-    public static String URL = "jdbc:jtds:sqlserver://121.35.98.225:10874;DatabaseName=LianHe";
+    public static String URL = "jdbc:jtds:sqlserver://un-sz.f3322.net:10874;DatabaseName=LianHe";
 
     private static Connection con;
     private static JDBCHelper instance;

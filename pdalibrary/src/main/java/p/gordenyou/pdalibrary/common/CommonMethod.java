@@ -45,15 +45,29 @@ public class CommonMethod {
     public static void showErrorDialog(Context context, String message, SureCallback callback) {
         new AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert).setTitle("警告").setMessage(message).setIcon(R.drawable.ic_error_black_24dp)
                 .setPositiveButton("确定", (dialogInterface, i) -> {
-                    if(callback != null){
+                    if (callback != null) {
                         callback.sureCallback();
                     }
                 }).show();
     }
 
+    public static void showErrorDialog(Context context, String message, String okMes, SureCallback okCallback, String ngMes, SureCallback ngCallback) {
+        new AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert).setTitle("警告").setMessage(message).setIcon(R.drawable.ic_error_black_24dp)
+                .setPositiveButton(okMes, (dialogInterface, i) -> {
+                    if (okCallback != null) {
+                        okCallback.sureCallback();
+                    }
+                }).setNegativeButton(ngMes, (dialog, which) -> {
+            if (ngCallback != null) {
+                ngCallback.sureCallback();
+            }
+        }).show();
+    }
+
 
     /**
      * 判断字符串是否全为数字
+     *
      * @param str
      * @return
      */
@@ -118,13 +132,13 @@ public class CommonMethod {
             if (view instanceof ScannerView) {
                 ScannerView scannerView = (ScannerView) view;
                 if (scannerView.getEditText().getText().toString().equals("")) {
-                    showErrorDialog(context, scannerView.getTitle().replace(" ","") + "不能为空！", null);
+                    showErrorDialog(context, scannerView.getTitle().replace(" ", "") + "不能为空！", null);
                     return false;
                 }
             } else {
                 NumberView numberView = (NumberView) view;
                 if (numberView.getEdittext().getText().toString().equals("0.0")) {
-                    showErrorDialog(context, numberView.getTitle().replace(" ","") + "不能为空！", null);
+                    showErrorDialog(context, numberView.getTitle().replace(" ", "") + "不能为空！", null);
                     return false;
                 }
             }
@@ -142,10 +156,10 @@ public class CommonMethod {
         }
     }
 
-    public static ArrayList<String> getKey(HashMap<String, String> map, String value){
+    public static ArrayList<String> getKey(HashMap<String, String> map, String value) {
         ArrayList<String> keyList = new ArrayList<>();
-        for(String key: map.keySet()){
-            if(map.get(key).equals(value)){
+        for (String key : map.keySet()) {
+            if (map.get(key).equals(value)) {
                 keyList.add(key);
             }
         }

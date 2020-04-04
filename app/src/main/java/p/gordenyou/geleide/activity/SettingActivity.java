@@ -8,6 +8,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import p.gordenyou.geleide.R;
 import p.gordenyou.pdalibrary.common.CommonMethod;
+import p.gordenyou.pdalibrary.net.JDBCHelper;
 import p.gordenyou.pdalibrary.view.ScannerView;
 
 public class SettingActivity extends BaseActivity {
@@ -48,7 +49,11 @@ public class SettingActivity extends BaseActivity {
                 editor.putString("password", password.getText());
                 editor.apply();
 
-                CommonMethod.showRightDialog(SettingActivity.this, "配置成功！");
+                JDBCHelper.URL = Url;
+                JDBCHelper.USERNAME = username.getText();
+                JDBCHelper.PASSWORD = password.getText();
+
+                CommonMethod.showRightDialog(SettingActivity.this, "配置成功！配置已生效。");
             }
         });
     }
