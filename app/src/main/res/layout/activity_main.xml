@@ -30,7 +30,7 @@
         <CheckBox
             android:id="@+id/shiShi"
             style="@style/style_button"
-            android:layout_weight="1"
+            android:layout_weight="0.9"
             android:text="实时上传" />
     </LinearLayout>
 

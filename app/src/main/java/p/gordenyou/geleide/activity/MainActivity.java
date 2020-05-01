@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -272,8 +273,7 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
 
                 } else {
                     if (!zhanWei.getText().isEmpty()) {
-                        if (wuLiao.getText().equals(testWuliao)) {
-
+                        if (checkContain()) {
                             if (!set_yisao.contains(zhanWei.getText())) {
                                 num_yisao++;
                                 numYiSao.setText(String.valueOf(num_yisao));
@@ -415,6 +415,15 @@ public class MainActivity extends BaseActivity implements View.OnKeyListener {
         });
 
         shiShi.setOnCheckedChangeListener((buttonView, isChecked) -> isShishi = isChecked);
+    }
+
+    private boolean checkContain() {
+        if(testWuliao.contains(",")){
+            HashSet<String> set_wuliao = new HashSet<>(Arrays.asList(testWuliao.split(",")));
+            return set_wuliao.contains(wuLiao.getText());
+        }else{
+            return testWuliao.equals(wuLiao.getText());
+        }
     }
 
     private String getZhanwei() {
